@@ -132,9 +132,9 @@ C360.mascot = (function () {
   }
 
   const FRASES = {
-    certo: ["Mandou bem!", "Isso aí!", "Perfeito!", "Que giro!", "Acertou em cheio!", "Na mosca!", "Arrasou!"],
-    errado: ["Quase!", "Ainda não…", "Gira mais uma vez!", "Hmm, não foi dessa vez."],
-    combo: n => `${n} seguidas! Você está pegando fogo!`
+    certo: ["Mandou bem!", "Isso aí!", "Perfeito!", "Acertou!", "Arrasou!"],
+    errado: ["Quase!", "Ainda não…", "Tente de novo!"],
+    combo: n => `${n} seguidas! 🔥`
   };
   const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 

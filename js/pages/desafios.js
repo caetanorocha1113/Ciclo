@@ -12,7 +12,8 @@
   let summary = ctx.summary;
   const pmap = () => Object.fromEntries(progress.map(p => [p.challengeId, p]));
 
-  const filters = { diff: "todas", tema: "todos", status: "todos" };
+  const temaURL = new URLSearchParams(location.search).get("tema");
+  const filters = { diff: "todas", tema: temaURL && C360.THEMES[temaURL] ? temaURL : "todos", status: "todos" };
 
   /* ---------- Resumo ---------- */
   function renderSummary() {
@@ -21,8 +22,8 @@
     $("lvl-name").textContent = n.atual.nome;
     $("lvl-bar").style.width = Math.round(n.progresso * 100) + "%";
     $("lvl-next").textContent = n.proximo
-      ? `Faltam ${n.proximo.min - summary.pontos} pts para ${n.proximo.nome}`
-      : "Nível máximo alcançado!";
+      ? `Faltam ${n.proximo.min - summary.pontos} pts`
+      : "Nível máximo!";
     $("st-points").textContent = summary.pontos;
     $("st-done").textContent = `${summary.concluidos}/${summary.total}`;
     const dias = S.streak(progress);
@@ -42,8 +43,9 @@
     $("f-diff").querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", c === b));
     renderCards();
   });
-  $("f-tema").innerHTML = `<option value="todos">Todos os temas</option>` +
+  $("f-tema").innerHTML = `<option value="todos">Todos</option>` +
     Object.entries(C360.THEMES).map(([id, l]) => `<option value="${id}">${l}</option>`).join("");
+  $("f-tema").value = filters.tema;
   $("f-tema").addEventListener("change", e => { filters.tema = e.target.value; renderCards(); });
   $("f-status").addEventListener("change", e => { filters.status = e.target.value; renderCards(); });
 
@@ -108,21 +110,21 @@
     const box = $("next-up");
     if (!next) {
       box.innerHTML = `<div class="next-up next-up--done">${M.svg({ char: "radi", mood: "happy", size: 92 })}
-        <div><span class="next-up__kicker">Volta completa!</span><h2>Você concluiu todos os ${challenges.length} desafios.</h2>
-        <p>Agora vale treinar de novo os que valeram menos pontos ou ajudar um colega.</p></div></div>`;
+        <div><span class="next-up__kicker">Parabéns!</span><h2>Você fez todos os desafios!</h2>
+        <p>Que tal ajudar um colega?</p></div></div>`;
       return;
     }
     const d = C360.DIFFICULTIES[next.dificuldade];
-    const fala = started ? "Ei, você parou no meio! Bora terminar?"
-      : summary.concluidos ? M.pick(["Bora girar mais um?", "Tenho um desafio novo pra você!", "Pronto para o próximo?"])
-      : "Oi! Eu sou o Radi. Pega o ciclo e vamos começar!";
+    const fala = started ? "Vamos terminar?"
+      : summary.concluidos ? M.pick(["Mais um?", "Bora girar!", "Próximo!"])
+      : "Comece por aqui!";
     box.innerHTML = `
       <div class="next-up">
         ${M.svg({ char: "radi", mood: started ? "think" : "idle", size: 92 })}
         <div>
           <span class="next-up__kicker">${esc(fala)}</span>
           <h2>${esc(next.titulo)}</h2>
-          <p>${d.etapa} · ${difficultyTag(next.dificuldade)} · vale até ${S.pointsFor(next, (pm[next.id] || {}).erros || 0, (pm[next.id] || {}).dicas || 0)} pts</p>
+          <p>${difficultyTag(next.dificuldade)} · ${S.pointsFor(next, (pm[next.id] || {}).erros || 0, (pm[next.id] || {}).dicas || 0)} pts</p>
         </div>
         <button class="btn btn--primary btn--lg" data-open="${next.id}">${started ? "Continuar" : "Começar"}</button>
       </div>`;
@@ -137,8 +139,8 @@
     const p = pm[c.id];
     const done = p && p.concluido;
     let status;
-    if (done) status = `<span class="status-done">Concluído · ${p.pontos} pts</span>`;
-    else if (p && (p.erros || p.dicas)) status = `<span class="status-progress">Em andamento · vale ${S.pointsFor(c, p.erros, p.dicas)} pts</span>`;
+    if (done) status = `<span class="status-done">${p.pontos} pts</span>`;
+    else if (p && (p.erros || p.dicas)) status = `<span class="status-progress">Vale ${S.pointsFor(c, p.erros, p.dicas)} pts</span>`;
     else status = `<span class="ch-card__pts">${C360.DIFFICULTIES[c.dificuldade].pontos} pts</span>`;
     return `
       <article class="ch-card ${done ? "ch-card--done" : ""}">
@@ -157,7 +159,7 @@
     const list = filtered();
     const pm = pmap();
     if (!list.length) {
-      $("cards").innerHTML = `<div class="empty">${M.svg({ char: "radi", mood: "sad", size: 90 })}<p style="margin:8px 0 0">Não achei nenhum desafio com esses filtros. Troque a etapa, o tema ou a situação.</p></div>`;
+      $("cards").innerHTML = `<div class="empty">${M.svg({ char: "radi", mood: "sad", size: 90 })}<p style="margin:8px 0 0">Nada aqui. Mude os filtros.</p></div>`;
       return;
     }
     const stages = Object.values(C360.DIFFICULTIES).sort((a, b) => a.ordem - b.ordem);
@@ -179,13 +181,12 @@
                 <h2 id="st-${d.id}">${d.etapa}</h2>${difficultyTag(d.id)}
               </div>
               <p class="stage__desc">${d.descricao}</p>
-              <button class="btn btn--primary btn--sm stage__play" data-play="${d.id}">▶ ${feitos === all.length ? "Treinar etapa" : feitos ? "Continuar etapa" : "Jogar etapa"}</button>
-              <button class="stage__toggle" data-toggle="${d.id}" aria-expanded="${open}" aria-controls="grid-${d.id}">${chevron}${open ? "Esconder cartas" : `Mostrar ${cards.length} cartas`}</button>
+              <button class="btn btn--primary btn--sm stage__play" data-play="${d.id}">▶ ${feitos === all.length ? "Treinar" : feitos ? "Continuar" : "Jogar"}</button>
+              <button class="stage__toggle" data-toggle="${d.id}" aria-expanded="${open}" aria-controls="grid-${d.id}">${chevron}${open ? "Esconder" : `Mostrar (${cards.length})`}</button>
             </div>
             <div class="stage__meta">
-              <div class="row"><span><b>${feitos}</b> de ${all.length} concluídos</span><span>${pts}/${max} pts</span></div>
+              <div class="row"><span><b>${feitos}</b>/${all.length} feitos</span><span>${pts} pts</span></div>
               <div class="meter"><span style="width:${all.length ? feitos / all.length * 100 : 0}%"></span></div>
-              <span>${d.pontos} pts por carta</span>
             </div>
           </div>
           <div class="grid-cards" id="grid-${d.id}" ${open ? "" : "hidden"}>
@@ -219,7 +220,7 @@
     const before = S.badgesFor(summary).filter(b => b.conquistada).map(b => b.id);
     summary = S.summarize(progress, challenges);
     S.badgesFor(summary).filter(b => b.conquistada && !before.includes(b.id))
-      .forEach(b => setTimeout(() => toast(`🏅 Nova conquista: ${b.nome}!`, "ok"), 400));
+      .forEach(b => setTimeout(() => toast(`🏅 ${b.nome}!`, "ok"), 400));
     return saved;
   }
 

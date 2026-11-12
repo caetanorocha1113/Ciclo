@@ -11,13 +11,13 @@
   $("p-nome").textContent = user.nome;
   const parts = user.nome.trim().split(/\s+/);
   $("p-avatar").textContent = (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase();
-  $("p-info").textContent = `${user.papel === "professor" ? "Professor(a)" : "Aluno(a)"} · ${user.turma || "sem turma"} · ${user.email}`;
+  $("p-info").textContent = `${user.papel === "professor" ? "Professor(a)" : "Aluno(a)"} · ${user.turma || "sem turma"}`;
 
   const n = summary.nivel;
   $("p-lvl-label").textContent = `Nível ${n.numero} · ${summary.pontos} pts`;
   $("p-lvl").textContent = n.atual.nome;
   $("p-lvl-bar").style.width = Math.round(n.progresso * 100) + "%";
-  $("p-lvl-next").textContent = n.proximo ? `Próximo: ${n.proximo.nome} (${n.proximo.min} pts)` : "Nível máximo alcançado!";
+  $("p-lvl-next").textContent = n.proximo ? `Próximo: ${n.proximo.nome}` : "Nível máximo!";
 
   const bar = (label, { feitos, total }) => `
     <div class="bar-row"><span>${label}</span>
@@ -45,13 +45,13 @@
         return `<li><span>${difficultyTag(c.dificuldade)} <a href="desafios.html#${c.id}">${esc(c.titulo)}</a></span>
           <span class="muted">${p.pontos} pts · ${fmtDate(p.atualizadoEm)}</span></li>`;
       }).join("")
-    : `<li class="muted">Nenhum desafio concluído ainda. <a href="desafios.html">Comece pelos fáceis</a>.</li>`;
+    : `<li class="muted">Nada ainda. <a href="desafios.html">Começar</a></li>`;
 
   $("btn-reset").addEventListener("click", async () => {
-    if (!confirm("Apagar todo o seu progresso? Pontos e conquistas voltam a zero e não dá para desfazer.")) return;
+    if (!confirm("Apagar tudo? Não dá para desfazer.")) return;
     try {
       await C360.db.resetProgress(user.id);
-      toast("Progresso apagado.", "ok");
+      toast("Apagado.", "ok");
       setTimeout(() => location.reload(), 700);
     } catch (ex) {
       toast("Não foi possível apagar: " + ex.message, "bad");

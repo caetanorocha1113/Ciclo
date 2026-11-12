@@ -11,10 +11,10 @@
 
   /* Radi, o mascote */
   function radi(mood, fala) {
-    $("radi-hello").innerHTML = `${C360.mascot.svg({ char: "radi", mood, size: 70 })}
+    $("radi-hello").innerHTML = `${C360.mascot.svg({ char: "radi", mood, size: 80 })}
       <div class="speech" style="--who:#7C4DCC"><p class="speech__text">${fala}</p></div>`;
   }
-  radi("idle", "Oi! Eu sou o <b>Radi</b>, o mascote do Ciclo 360°. Entre e vamos girar!");
+  radi("idle", "Oi! Eu sou o <b>Radi</b>. Vamos girar?");
 
   /* Abas */
   function showTab(which, focus = true) {
@@ -23,9 +23,7 @@
     $("tab-signup").checked = !login;
     $("form-login").hidden = !login;
     $("form-signup").hidden = login;
-    $("auth-title").textContent = login ? "Bem-vindo de volta" : "Crie sua conta";
-    $("auth-sub").textContent = login ? "Entre para continuar seus desafios." : "Leva menos de um minuto. Depois é só girar o ciclo.";
-    radi(login ? "idle" : "happy", login ? "Que bom te ver! Entre e vamos girar." : "Oba, gente nova! Me conta seu nome e sua turma.");
+    radi(login ? "idle" : "happy", login ? "Oi! Vamos girar?" : "Oba! Qual é o seu nome?");
     if (focus) (login ? $("login-email") : $("su-nome")).focus({ preventScroll: true });
   }
   $("tab-login").addEventListener("change", () => showTab("login"));
@@ -88,7 +86,7 @@
     const senha = $("login-senha").value;
     const err = $("login-erro");
     err.textContent = "";
-    if (!emailOk(email)) { err.textContent = "Digite um e-mail válido."; $("login-email").focus(); return; }
+    if (!emailOk(email)) { err.textContent = "E-mail inválido."; $("login-email").focus(); return; }
     if (!senha) { err.textContent = "Digite sua senha."; $("login-senha").focus(); return; }
     busy(e.target, true);
     try {
@@ -96,7 +94,7 @@
       location.href = "desafios.html";
     } catch (ex) {
       err.textContent = ex.message;
-      radi("sad", "Ops, algo não bateu. Confere o e-mail e a senha?");
+      radi("sad", "Ops! Confira o e-mail e a senha.");
       busy(e.target, false);
     }
   });
@@ -114,10 +112,10 @@
     };
     const err = $("su-erro");
     err.textContent = "";
-    if (dados.nome.split(/\s+/).length < 2) { err.textContent = "Digite nome e sobrenome."; $("su-nome").focus(); return; }
+    if (dados.nome.split(/\s+/).length < 2) { err.textContent = "Escreva nome e sobrenome."; $("su-nome").focus(); return; }
     if (!dados.turma) { err.textContent = "Informe a turma."; $("su-turma").focus(); return; }
-    if (!emailOk(dados.email)) { err.textContent = "Digite um e-mail válido."; $("su-email").focus(); return; }
-    if (dados.senha.length < 6) { err.textContent = "A senha precisa ter pelo menos 6 caracteres."; $("su-senha").focus(); return; }
+    if (!emailOk(dados.email)) { err.textContent = "E-mail inválido."; $("su-email").focus(); return; }
+    if (dados.senha.length < 6) { err.textContent = "Senha: mínimo 6 letras ou números."; $("su-senha").focus(); return; }
     busy(e.target, true);
     try {
       await C360.auth.register(dados, true);

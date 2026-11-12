@@ -18,24 +18,24 @@
     <div class="page-head">
       <div>
         <h1>Ranking</h1>
-        <p class="lead">Cada erro ou dica diminui um pouco os pontos do desafio. Em caso de empate, vence quem concluiu mais desafios.</p>
+        <p class="lead">Quem acerta de primeira ganha mais pontos.</p>
       </div>
     </div>
     <section class="toolbar" aria-label="Filtros do ranking">
       <div class="field field--wide">
         <label for="f-turma">Turma</label>
-        <select class="input" id="f-turma"><option value="">Todas as turmas</option></select>
+        <select class="input" id="f-turma"><option value="">Todas</option></select>
       </div>
       <div id="prof-tools" class="prof-tools" hidden>
-        <button class="btn" id="btn-csv">Exportar planilha (CSV)</button>
-        <button class="btn btn--ghost" id="btn-demo">Remover alunos de exemplo</button>
+        <button class="btn" id="btn-csv">Baixar planilha</button>
+        <button class="btn btn--ghost" id="btn-demo">Tirar exemplos</button>
       </div>
     </section>
     <section class="podium" id="podium" aria-label="Três primeiros colocados"></section>
     <div class="table-wrap">
       <table class="rank">
         <caption class="sr-only">Classificação completa</caption>
-        <thead><tr><th>#</th><th>Aluno</th><th class="hide-sm">Turma</th><th class="num">Desafios</th><th class="num">Pontos</th><th class="hide-sm">Último</th></tr></thead>
+        <thead><tr><th>#</th><th>Aluno</th><th class="hide-sm">Turma</th><th class="num">Feitos</th><th class="num">Pontos</th><th class="hide-sm">Último</th></tr></thead>
         <tbody id="rank-body"></tbody>
       </table>
     </div>

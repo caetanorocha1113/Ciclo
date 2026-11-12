@@ -113,7 +113,7 @@ footer{margin-top:40px;color:var(--muted);font-size:.9rem}
     <a class="topbar__link" href="../ranking.html">Ranking</a>
   </nav>
   <h1>Ciclo 360°: gire e descubra</h1>
-  <p>Protótipo digital do material que será construído em papelão. Tudo o que aparece aqui existe na versão física: o ponteiro gira, as réguas transparentes deslizam e o barbante marca a tangente. Escala: raio de 10 cm = 1 unidade.</p>
+  <p>O ciclo de papelão, na tela. Raio 10 cm = 1.</p>
 </header>
 
 <div class="main">
@@ -167,7 +167,7 @@ footer{margin-top:40px;color:var(--muted);font-size:.9rem}
         <path d="M295 390 H305" stroke="#8A6D1A" stroke-width="2"/>
       </g>
     </svg>
-    <p class="hint" id="hint">Arraste o ponteiro em qualquer ponto do disco, ou use o controle ao lado. Eixo vermelho: seno (y). Eixo azul: cosseno (x).</p>
+    <p class="hint" id="hint">Arraste o ponteiro. Vermelho = seno. Azul = cosseno.</p>
   </div>
 
   <div>
@@ -180,15 +180,15 @@ footer{margin-top:40px;color:var(--muted);font-size:.9rem}
       </div>
       <p class="explain" id="oExplain"></p>
       <div class="ctrls">
-        <label for="rng" class="badge" style="border:none;background:none;padding:0">Ângulo do ponteiro</label>
+        <label for="rng" class="badge" style="border:none;background:none;padding:0">Ângulo</label>
         <input type="range" id="rng" min="0" max="359" value="150" aria-label="Ângulo em graus">
         <div class="row">
           <button id="bMinus" aria-label="Ângulo notável anterior">◀ anterior</button>
           <button id="bPlus" aria-label="Próximo ângulo notável">próximo ▶</button>
-          <button id="bSpin" class="primary">Dar uma volta completa</button>
+          <button id="bSpin" class="primary">Girar uma volta</button>
         </div>
-        <label class="check"><input type="checkbox" id="cSnap" checked> Encaixar nos ângulos notáveis (como as marcas gravadas no disco)</label>
-        <label class="check"><input type="checkbox" id="cAuto" checked> Réguas acompanham o ponteiro. Desmarque para deslizar as réguas com a mão, como o aluno fará no material.</label>
+        <label class="check"><input type="checkbox" id="cSnap" checked> Parar nas marcas do disco</label>
+        <label class="check"><input type="checkbox" id="cAuto" checked> Réguas automáticas</label>
         <div class="status" id="oStatus"></div>
       </div>
     </div>
@@ -197,13 +197,13 @@ footer{margin-top:40px;color:var(--muted);font-size:.9rem}
 
 <section class="block">
   <h2>Peças do protótipo</h2>
-  <p class="lead">Toque em uma peça para vê-la piscar no desenho. Entre parênteses, o material do protótipo em papelão; depois, o do produto final.</p>
+  <p class="lead">Toque numa peça para ver onde ela fica.</p>
   <div class="pieces" id="pieces"></div>
 </section>
 
 <section class="block">
   <h2>Placas de sinais</h2>
-  <p class="lead">No material, cada quadrante tem três plaquinhas presas com velcro. O aluno gira o ponteiro, observa para onde as réguas vão e monta os sinais. Toque nas placas para trocar entre ?, + e −.</p>
+  <p class="lead">Toque para trocar entre ?, + e −.</p>
   <div class="signs" id="signs"></div>
   <div class="row" style="margin-top:12px">
     <button class="primary" id="bCheckSigns">Conferir sinais</button>
@@ -214,19 +214,19 @@ footer{margin-top:40px;color:var(--muted);font-size:.9rem}
 
 <section class="block">
   <h2>Cartas-desafio</h2>
-  <p class="lead">Vão num envelope no verso do material. O aluno lê, gira o ponteiro até a resposta e confere. Aqui, gire o ciclo lá em cima e toque em “Conferir com o ciclo”.</p>
+  <p class="lead">Gire o ciclo e toque em “Conferir”.</p>
   <div class="cards" id="cards"></div>
 </section>
 
 <section class="block">
   <h2>Como o material ensina</h2>
-  <p class="lead">A proposta de atividade segue uma sequência que vai do concreto ao abstrato. O objetivo é que, no fim, o aluno consiga resolver sem o material.</p>
+  <p class="lead">Do concreto ao abstrato.</p>
   <ol class="steps">
-    <li><b>Explorar</b>Girar livremente e descrever o que acontece com as réguas: quando o seno cresce, quando o cosseno fica negativo, onde o barbante some.</li>
-    <li><b>Medir</b>Ler seno e cosseno de 30°, 45° e 60° nas réguas e anotar numa tabela. Com raio de 10 cm, sen 30° mede 5 cm, ou seja, 0,5.</li>
-    <li><b>Comparar</b>Encontrar 150°, 210° e 330° e perceber que as réguas param na mesma distância de 30°, só trocando de lado. Daí nasce a redução ao 1º quadrante.</li>
-    <li><b>Generalizar</b>Montar as placas de sinais sem girar e depois conferir girando. O sinal deixa de ser regra decorada e vira consequência da posição do ponto.</li>
-    <li><b>Abstrair</b>Resolver as cartas-desafio sem o material e usá-lo só para conferir. Quando o ciclo fica dispensável, a aprendizagem aconteceu.</li>
+    <li><b>Explorar</b>Girar e ver as réguas mudarem.</li>
+    <li><b>Medir</b>Ler 30°, 45° e 60° nas réguas.</li>
+    <li><b>Comparar</b>Ver que 150°, 210° e 330° repetem o 30°.</li>
+    <li><b>Generalizar</b>Montar os sinais e conferir girando.</li>
+    <li><b>Abstrair</b>Resolver sem o material.</li>
   </ol>
 </section>
 
@@ -313,18 +313,18 @@ function render(){
 }
 function explain(a,s,c,nt){
   const ref=a<=90?a:a<=180?180-a:a<=270?a-180:360-a;
-  if(nt)return`Em ${a}° o ponto está no eixo y. A régua do cosseno passa pelo centro (cos = 0) e o barbante fica paralelo à reta da tangente: eles nunca se cruzam, por isso a tangente não existe.`;
-  if(a===0||a===180)return`Em ${a}° o ponto está no eixo x. A régua do seno passa pelo centro (sen = 0) e o barbante cruza a reta da tangente bem na altura zero.`;
-  const lado=c>0?"à direita do eixo y (cosseno positivo)":"à esquerda do eixo y (cosseno negativo)";
-  const alt=s>0?"acima do eixo x (seno positivo)":"abaixo do eixo x (seno negativo)";
-  const t=(s/c)>0?"O barbante cruza a reta da tangente acima do eixo x: tangente positiva.":"O barbante cruza a reta da tangente abaixo do eixo x: tangente negativa.";
-  let sim=a!==ref?` As réguas estão à mesma distância dos eixos que em ${ref}°; só o lado mudou.`:" Este é o ângulo de referência: os outros quadrantes repetem estes comprimentos.";
-  return`O ponto está ${alt} e ${lado}. ${t}${sim}`;
+  if(nt)return`Em ${a}°, cos = 0. O barbante não cruza a reta: a tangente não existe.`;
+  if(a===0||a===180)return`Em ${a}°, sen = 0 e tangente = 0.`;
+  const lado=c>0?"à direita (cos +)":"à esquerda (cos −)";
+  const alt=s>0?"em cima (sen +)":"embaixo (sen −)";
+  const t=(s/c)>0?"Tangente +.":"Tangente −.";
+  let sim=a!==ref?` Mesmo tamanho de ${ref}°.`:"";
+  return`Ponto ${alt} e ${lado}. ${t}${sim}`;
 }
 function status(s,c){
   const st=$("oStatus");
-  if(auto){st.className="status";st.textContent="";$("hint").textContent="Arraste o ponteiro em qualquer ponto do disco, ou use o controle ao lado. Eixo vermelho: seno (y). Eixo azul: cosseno (x).";return;}
-  $("hint").textContent="Modo manual: arraste a tira vermelha (seno) para cima ou para baixo e a azul (cosseno) para os lados, até encostarem na ponta do ponteiro.";
+  if(auto){st.className="status";st.textContent="";$("hint").textContent="Arraste o ponteiro. Vermelho = seno. Azul = cosseno.";return;}
+  $("hint").textContent="Arraste as réguas até a ponta do ponteiro.";
   const okS=Math.abs(sv-s)<.03, okC=Math.abs(cv-c)<.03;
   st.className="status"+(okS&&okC?" ok":"");
   st.textContent=`Régua do seno marca ${fmt(sv)} ${okS?"✓ encostou":"(ainda não encostou)"} · régua do cosseno marca ${fmt(cv)} ${okC?"✓ encostou":"(ainda não encostou)"}`;
@@ -365,15 +365,15 @@ $("bSpin").onclick=()=>{if(spinning)return;spinning=true;const s0=snap;snap=fals
 
 /* peças */
 const PIECES=[
- ["p-disco","#DDC193","Disco com o ciclo","Molde impresso colado no papelão; no final, MDF gravado a laser. Raio de 10 cm, graus por fora e radianos por dentro."],
- ["p-ponteiro","#EED7A8","Ponteiro","Palito de picolé com 10 cm do centro à ponta; no final, acrílico transparente."],
- ["p-colchete","#D4AF37","Eixo de giro","Colchete bailarina atravessando o centro, firme para não ter folga."],
- ["p-pet-sen","#E8B4AE","Régua do seno","Tira de garrafa PET com linha vermelha. Sobe e desce; a leitura é feita no eixo y."],
- ["p-pet-cos","#AFC6E6","Régua do cosseno","Tira de PET com linha azul. Vai para os lados; a leitura é feita no eixo x."],
- ["p-trilhos","#F4F4F4","Trilhos","Canudos colados nas bordas da caixa, onde as tiras de PET deslizam."],
- ["p-tangente","#E2C48C","Reta da tangente","Palito de churrasco a 10 cm à direita do centro (x = 1), com escala marcada."],
- ["p-barbante","#6B4F2A","Barbante","Preso no centro, esticado ao longo do ponteiro até a reta da tangente."],
- ["p-caixa","#B08150","Caixa-base","Tampa de caixa de papelão reaproveitada; no final, base de MDF."]];
+ ["p-disco","#DDC193","Disco com o ciclo","Papelão com molde. Raio 10 cm."],
+ ["p-ponteiro","#EED7A8","Ponteiro","Palito de picolé, 10 cm."],
+ ["p-colchete","#D4AF37","Eixo de giro","Colchete bailarina no centro."],
+ ["p-pet-sen","#E8B4AE","Régua do seno","Tira de PET vermelha. Sobe e desce."],
+ ["p-pet-cos","#AFC6E6","Régua do cosseno","Tira de PET azul. Vai para os lados."],
+ ["p-trilhos","#F4F4F4","Trilhos","Canudos onde as réguas correm."],
+ ["p-tangente","#E2C48C","Reta da tangente","Palito de churrasco em x = 1."],
+ ["p-barbante","#6B4F2A","Barbante","Vai do centro até a reta."],
+ ["p-caixa","#B08150","Caixa-base","Tampa de caixa reaproveitada."]];
 PIECES.forEach(([id,col,t,d])=>{const b=document.createElement("button");b.className="piece";
   b.innerHTML=`<span class="sw" style="background:${col}"></span><span><b>${t}</b><small>${d}</small></span>`;
   b.onclick=()=>{const g=$(id);g.classList.remove("hl");void g.getBBox();g.classList.add("hl");svg.scrollIntoView({behavior:"smooth",block:"center"});};
@@ -388,22 +388,22 @@ for(let q=1;q<=4;q++){const d=document.createElement("div");d.className="q";d.in
     d.appendChild(b);});$("signs").appendChild(d);}
 $("bCheckSigns").onclick=()=>{let ok=0,emp=0;document.querySelectorAll(".q button").forEach(b=>{const k=b.dataset.q+"-"+b.dataset.i,v=signState[k];
   b.classList.remove("right","wrong");if(v==="?"){emp++;return;}if(v===ANS[b.dataset.q][b.dataset.i]){b.classList.add("right");ok++;}else b.classList.add("wrong");});
-  const o=$("oSigns");if(emp){o.className="status bad";o.textContent=`Faltam ${emp} placas. Gire o ponteiro até cada quadrante e veja para que lado as réguas vão.`;}
-  else if(ok===12){o.className="status ok";o.textContent="Todas certas! Os sinais saíram da posição do ponto, não de uma regra decorada.";}
-  else{o.className="status bad";o.textContent=`${ok} de 12 corretas. Para as marcadas em vermelho, gire até o quadrante: régua abaixo do eixo x = seno negativo; à esquerda do eixo y = cosseno negativo.`;}};
+  const o=$("oSigns");if(emp){o.className="status bad";o.textContent=`Faltam ${emp} placas.`;}
+  else if(ok===12){o.className="status ok";o.textContent="Todas certas! 🎉";}
+  else{o.className="status bad";o.textContent=`${ok} de 12 certas. Gire e confira as vermelhas.`;}};
 $("bResetSigns").onclick=()=>{document.querySelectorAll(".q button").forEach(b=>{const k=b.dataset.q+"-"+b.dataset.i;signState[k]="?";b.textContent=`${FN[b.dataset.i]}  ?`;b.classList.remove("right","wrong");});$("oSigns").textContent="";};
 
 /* cartas */
 const CARDS=[
- ["Encontre um ângulo do 2º quadrante em que o seno vale 1/2.",a=>a===150,"Pense em 30°: qual ângulo do 2º quadrante deixa a régua do seno na mesma altura?","Isso! sen 150° = 1/2, a mesma altura de 30°, só que à esquerda."],
- ["Em qual ângulo o seno e o cosseno são iguais e positivos?",a=>a===45,"As duas réguas precisam ficar à mesma distância do centro, no 1º quadrante.","Exato: 45°, com sen = cos = √2/2 ≈ 0,71."],
- ["Gire até o ângulo em que o cosseno vale −1.",a=>a===180,"A régua azul precisa ir até a ponta esquerda do eixo x.","Isso: cos 180° = −1. O ponto está na extremidade esquerda."],
- ["Leve o ponteiro até 4π/3 rad.",a=>a===240,"π é meia volta. 4π/3 é meia volta mais um terço de π (60°).","Certo: 4π/3 rad = 240°, no 3º quadrante."],
- ["Ache o ângulo do 4º quadrante com o mesmo cosseno de 60°.",a=>a===300,"A régua azul fica no mesmo lugar de 60°; o ponto só desce para baixo do eixo x.","Isso! cos 300° = cos 60° = 1/2."],
- ["Gire até um ângulo em que a tangente não existe e observe o barbante.",a=>a===90||a===270,"Procure onde o barbante fica paralelo à reta da tangente.","Isso: em 90° e 270° o barbante nunca encontra a reta x = 1."]];
+ ["Que ângulo do 2º quadrante tem seno 1/2?",a=>a===150,"Mesma altura de 30°.","Isso! 150°."],
+ ["Onde seno e cosseno são iguais e positivos?",a=>a===45,"Réguas do mesmo tamanho.","Isso! 45°."],
+ ["Onde o cosseno vale −1?",a=>a===180,"Régua azul toda à esquerda.","Isso! 180°."],
+ ["Gire até 4π/3 rad.",a=>a===240,"π é meia volta. Mais 60°.","Isso! 240°."],
+ ["Que ângulo do 4º quadrante tem o cosseno de 60°?",a=>a===300,"O ponto só desce.","Isso! 300°."],
+ ["Onde a tangente não existe?",a=>a===90||a===270,"O barbante fica paralelo à reta.","Isso! 90° e 270°."]];
 CARDS.forEach(([t,chk,hint,ok],i)=>{const c=document.createElement("div");c.className="card";
-  c.innerHTML=`<span class="n">Carta ${i+1}</span><p>${t}</p><div class="row"><button>Conferir com o ciclo</button></div><p class="fb status"></p>`;
-  const fb=c.querySelector(".fb");c.querySelector("button").onclick=()=>{if(chk(ang)){fb.className="fb status ok";fb.textContent=ok;}else{fb.className="fb status bad";fb.textContent=`O ponteiro está em ${ang}°. Dica: ${hint}`;}};
+  c.innerHTML=`<span class="n">Carta ${i+1}</span><p>${t}</p><div class="row"><button>Conferir</button></div><p class="fb status"></p>`;
+  const fb=c.querySelector(".fb");c.querySelector("button").onclick=()=>{if(chk(ang)){fb.className="fb status ok";fb.textContent=ok;}else{fb.className="fb status bad";fb.textContent=`Ainda não (${ang}°). Dica: ${hint}`;}};
   $("cards").appendChild(c);});
 
 render();

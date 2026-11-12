@@ -206,7 +206,7 @@ body.lesson-open { overflow: hidden; }
 /* ===== Mascote em outras páginas ===== */
 .radi-hello { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: end; margin-bottom: 16px; }
 .radi-hello .speech { padding: 10px 14px; }
-.radi-hello .speech__text { font-size: .98rem; font-weight: 400; }
+.radi-hello .speech__text { font-size: 1.08rem; font-weight: 700; }
 .radi-hello .speech__text b { color: var(--accent-strong); }
 .next-up .mascot { justify-self: center; }
 .stage__play { margin-top: 4px; }

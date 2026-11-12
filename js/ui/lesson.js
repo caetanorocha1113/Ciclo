@@ -85,7 +85,8 @@ C360.lesson = (function () {
 
   function close(confirmar = true) {
     if (confirmar && st.fase !== "fim" && st.resolvidas > 0 &&
-      !confirm("Sair da lição? O que você já acertou continua salvo.")) return;
+      !confirm("Sair? Seus acertos ficam salvos.")) return;
+    closeLearn();
     root.hidden = true;
     root.innerHTML = "";
     document.body.classList.remove("lesson-open");
@@ -129,7 +130,7 @@ C360.lesson = (function () {
     const c = st.atual, entry = opts.getEntry(c);
     const who = M.forChallenge(c), char = M.CHARS[who];
     const pratica = !!entry.concluido;
-    const kicker = { escolha: "Escolha a resposta certa", numero: "Toque no valor certo", angulo: "Gire o ponteiro até a resposta" }[c.tipo];
+    const kicker = { escolha: "Escolha", numero: "Toque no valor", angulo: "Gire o ponteiro" }[c.tipo];
     const repetida = (st.tentativas[c.id] || 0) > 0;
     const vale = S.pointsFor(c, entry.erros, entry.dicas);
 
@@ -137,9 +138,9 @@ C360.lesson = (function () {
       ${topBar()}
       <main class="ls-body">
         <div class="ls-inner">
-          <p class="ls-kicker">${repetida ? "↻ Revisão · " : ""}${kicker}${pratica ? ' <span class="ls-badge">treino</span>' : ` <span class="ls-badge">até ${vale} pts</span>`}</p>
+          <p class="ls-kicker">${repetida ? "↻ " : ""}${kicker}${pratica ? ' <span class="ls-badge">treino</span>' : ` <span class="ls-badge">até ${vale} pts</span>`}</p>
           <details class="ls-task" ${c.tipo === "angulo" ? "" : "open"}>
-            <summary>${cycleIco}<span>Com o Ciclo 360° em mãos</span></summary>
+            <summary>${cycleIco}<span>No ciclo</span></summary>
             <p>${esc(c.noCiclo)}</p>
           </details>
           <div class="ls-scene">
@@ -150,6 +151,7 @@ C360.lesson = (function () {
               <p class="speech__hint" id="ls-hint" ${!pratica && entry.dicas ? "" : "hidden"}>${!pratica && entry.dicas ? hintsHTML(c, entry.dicas) : ""}</p>
             </div>
           </div>
+          <button class="ls-learn" data-act="learn">📖 Aprender</button>
           <div class="ls-answer" id="ls-answer">${answerUI(c)}</div>
         </div>
       </main>
@@ -167,9 +169,9 @@ C360.lesson = (function () {
 
   function hintButton(c, entry) {
     if (entry.concluido) return `<button class="btn ls-hintbtn" data-act="hint">💡 Ver dica</button>`;
-    if (entry.dicas >= c.dicas.length) return `<button class="btn ls-hintbtn" disabled>💡 Sem mais dicas</button>`;
+    if (entry.dicas >= c.dicas.length) return `<button class="btn ls-hintbtn" disabled>💡 Acabou</button>`;
     const custo = S.pointsFor(c, entry.erros, entry.dicas) - S.pointsFor(c, entry.erros, entry.dicas + 1);
-    return `<button class="btn ls-hintbtn" data-act="hint">💡 ${entry.dicas ? "Outra dica" : "Dica"} <small>−${custo} pts</small></button>`;
+    return `<button class="btn ls-hintbtn" data-act="hint">💡 Dica <small>−${custo} pts</small></button>`;
   }
 
   function hintsHTML(c, n) {
@@ -220,7 +222,7 @@ C360.lesson = (function () {
           <output class="ls-dialread" id="dl-read">0°</output>
           <button class="btn btn--soft" data-act="dial-next" aria-label="Próximo ângulo">↺</button>
         </div>
-        <p class="ls-dialhint">Arraste a bolinha ou use os botões.</p>
+        <p class="ls-dialhint">Arraste a bolinha.</p>
       </div>`;
   }
 
@@ -312,7 +314,7 @@ C360.lesson = (function () {
     const fresh = opts.getEntry(c);
     const b = root.querySelector(".ls-hintbtn");
     if (fresh.concluido) {
-      if (n >= c.dicas.length) { b.disabled = true; b.textContent = "💡 Sem mais dicas"; }
+      if (n >= c.dicas.length) { b.disabled = true; b.textContent = "💡 Acabou"; }
     } else {
       b.outerHTML = hintButton(c, fresh);
       const kb = root.querySelector(".ls-kicker .ls-badge");
@@ -382,20 +384,21 @@ C360.lesson = (function () {
     let titulo, texto;
     if (ok) {
       titulo = st.combo >= 3 ? M.FRASES.combo(st.combo) : M.pick(M.FRASES.certo);
-      texto = pratica ? "Treino concluído." : `+${ganhos} pts`;
+      texto = pratica ? "Treino feito." : `+${ganhos} pts`;
       C360.sfx.play(st.combo >= 3 && st.combo % 3 === 0 ? "combo" : "certo");
       if (st.combo >= 3 && st.combo % 3 === 0) confetti(root.querySelector(".ls-scene"));
     } else if (revelar) {
-      titulo = "Vamos ver juntos";
+      titulo = "Veja a resposta";
       texto = `Resposta: <b>${esc(C360.answers.correctText(c))}</b>`;
       C360.sfx.play("errado");
     } else {
       titulo = M.pick(M.FRASES.errado);
-      texto = "Confira as réguas no ciclo. Essa pergunta volta no fim da lição.";
+      texto = "Ela volta no fim.";
       C360.sfx.play("errado");
     }
-    const explica = ok || revelar
-      ? `<details class="ls-why" ${revelar ? "open" : ""}><summary>Por quê?</summary><p>${esc(c.explicacao)}</p></details>` : "";
+    const explica = (ok || revelar
+      ? `<details class="ls-why" ${revelar ? "open" : ""}><summary>Por quê?</summary><p>${esc(c.explicacao)}</p></details>` : "")
+      + `<button class="ls-learnlink" data-act="learn">📖 Aprender mais</button>`;
 
     root.querySelector(".ls-foot").outerHTML = `
       <footer class="ls-foot ls-foot--${ok ? "ok" : "bad"}" role="status">
@@ -416,10 +419,10 @@ C360.lesson = (function () {
     const precisao = st.respostas ? Math.round(st.dePrimeira / st.respostas * 100) : 100;
     const seg = Math.round((Date.now() - st.inicio) / 1000);
     const tempo = seg >= 60 ? `${Math.floor(seg / 60)}min ${String(seg % 60).padStart(2, "0")}s` : `${seg}s`;
-    const titulo = precisao === 100 ? "Lição perfeita!" : precisao >= 70 ? "Lição concluída!" : "Lição concluída!";
-    const fala = precisao === 100 ? "Nenhum erro! Você girou o ciclo como ninguém."
-      : precisao >= 70 ? "Mandou muito bem. Bora para a próxima?"
-      : "Cada erro foi um treino. Revise as explicações e tente de novo!";
+    const titulo = precisao === 100 ? "Perfeito!" : "Lição feita!";
+    const fala = precisao === 100 ? "Nenhum erro!"
+      : precisao >= 70 ? "Mandou bem!"
+      : "Errar também é treinar!";
     root.innerHTML = `
       <main class="ls-body ls-end">
         <div class="ls-inner">
@@ -438,7 +441,7 @@ C360.lesson = (function () {
             <div class="ls-stat ls-stat--acc"><span>Precisão</span><b>${precisao}%</b></div>
             <div class="ls-stat ls-stat--fire"><span>Sequência</span><b>🔥 ${st.maxCombo}</b></div>
           </div>
-          <p class="ls-end__time">Tempo: ${tempo}</p>
+          <p class="ls-end__time">⏱ ${tempo}</p>
         </div>
       </main>
       <footer class="ls-foot"><div class="ls-foot__inner"><span></span>
@@ -446,6 +449,43 @@ C360.lesson = (function () {
     C360.sfx.play("fim");
     confetti(root.querySelector("#ls-end-hero"), 40);
     root.querySelector(".ls-continue").focus({ preventScroll: true });
+  }
+
+  /* ---------- Explicação completa (sem sair da lição) ---------- */
+  let drawer;
+  function openLearn() {
+    const { topico, secao } = C360.learn.linkFor(st.atual);
+    if (!drawer) {
+      drawer = document.createElement("div");
+      drawer.className = "ls-drawer";
+      drawer.hidden = true;
+      document.body.appendChild(drawer);
+      drawer.addEventListener("click", e => { if (e.target.closest("[data-dr=close]")) closeLearn(); });
+      drawer.addEventListener("keydown", e => { if (e.key === "Escape") { e.stopPropagation(); closeLearn(); } });
+      C360.learn.bindVideos(drawer);
+    }
+    drawer.innerHTML = `
+      <button class="ls-drawer__bg" data-dr="close" aria-label="Fechar explicação" tabindex="-1"></button>
+      <div class="ls-drawer__panel" role="dialog" aria-modal="true" aria-labelledby="dr-title">
+        <div class="ls-drawer__top"><span aria-hidden="true">📖</span><h2 id="dr-title">${topico.titulo}</h2>
+          <button class="ls-icon" data-dr="close" aria-label="Fechar explicação">✕</button></div>
+        <div class="ls-drawer__body">${C360.learn.topicHTML(topico, { destaque: secao, compacto: true })}</div>
+        <div class="ls-drawer__foot">
+          <a class="btn" href="aprenda.html#${topico.id}${secao ? "-" + secao : ""}" target="_blank" rel="noopener">Ver tudo ↗</a>
+          <button class="btn btn--primary" data-dr="close">Voltar</button>
+        </div>
+      </div>`;
+    drawer.hidden = false;
+    const foco = secao && drawer.querySelector(`[data-sec="${secao}"]`);
+    if (foco) setTimeout(() => foco.scrollIntoView({ block: "start" }), 30);
+    drawer.querySelector(".ls-drawer__top .ls-icon").focus({ preventScroll: true });
+  }
+  function closeLearn() {
+    if (!drawer) return;
+    drawer.hidden = true;
+    drawer.innerHTML = "";
+    const b = root.querySelector("[data-act=learn]");
+    if (b) b.focus({ preventScroll: true });
   }
 
   /* ---------- Confete ---------- */
@@ -473,6 +513,7 @@ C360.lesson = (function () {
     if (act === "sound") { C360.sfx.toggle(); root.querySelector(".ls-top").outerHTML = topBar(); return; }
     if (act === "check") return check();
     if (act === "hint") return showHint();
+    if (act === "learn") return openLearn();
     if (act === "continue") return next();
     if (act === "finish") return close(false);
     if (act === "dial-prev") return stepDial(-1);
@@ -485,6 +526,7 @@ C360.lesson = (function () {
   });
 
   function onKey(e) {
+    if (drawer && !drawer.hidden) return;
     if (e.key === "Escape") { e.preventDefault(); return close(true); }
     if (e.key === "Enter" && !e.target.closest("summary")) {
       if (st.fase === "resposta" && st.sel !== null) { e.preventDefault(); check(); }

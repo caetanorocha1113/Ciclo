@@ -15,11 +15,11 @@ C360.SupabaseAdapter = (function () {
     const m = String((error && (error.message || error.error_description)) || error || "");
     if (/invalid login credentials/i.test(m)) return "E-mail ou senha incorretos.";
     if (/already registered|already exists/i.test(m)) return "Já existe uma conta com este e-mail.";
-    if (/email not confirmed/i.test(m)) return "Confirme seu e-mail pelo link que enviamos antes de entrar.";
+    if (/email not confirmed/i.test(m)) return "Abra seu e-mail e confirme a conta.";
     if (/password should be at least/i.test(m)) return "A senha precisa ter pelo menos 6 caracteres.";
-    if (/rate limit|too many/i.test(m)) return "Muitas tentativas seguidas. Aguarde um minuto e tente de novo.";
-    if (/failed to fetch|network/i.test(m)) return "Sem conexão com o banco de dados. Verifique a internet.";
-    if (/JWT|not authenticated|permission denied/i.test(m)) return "Sua sessão expirou. Entre novamente.";
+    if (/rate limit|too many/i.test(m)) return "Muitas tentativas. Espere 1 minuto.";
+    if (/failed to fetch|network/i.test(m)) return "Sem internet. Tente de novo.";
+    if (/JWT|not authenticated|permission denied/i.test(m)) return "Entre de novo, por favor.";
     return m || "Erro inesperado no banco de dados.";
   }
   function check({ data, error }) {
@@ -59,7 +59,7 @@ C360.SupabaseAdapter = (function () {
         options: { data: { nome: nome.trim(), turma: (turma || "").trim(), papel } }
       }));
       if (!data.session) {
-        throw new Error("Conta criada! Abra o e-mail de confirmação que enviamos e depois volte aqui para entrar.");
+        throw new Error("Conta criada! Confirme pelo seu e-mail e depois entre.");
       }
       const user = await this.getUser(data.user.id);
       return { user: user || { id: data.user.id, nome, email, turma, papel }, token: null };
@@ -68,7 +68,7 @@ C360.SupabaseAdapter = (function () {
     async login(email, senha) {
       const data = check(await sb.auth.signInWithPassword({ email: String(email).trim().toLowerCase(), password: senha }));
       const user = await this.getUser(data.user.id);
-      if (!user) throw new Error("Seu perfil não foi encontrado no banco. Fale com o professor.");
+      if (!user) throw new Error("Conta não encontrada. Fale com o professor.");
       return { user, token: null };
     },
 

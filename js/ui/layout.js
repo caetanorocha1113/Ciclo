@@ -11,6 +11,7 @@ C360.ui = (function () {
   const ICONS = {
     desafios: '<rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/>',
     ranking: '<path d="M8 21V11H4v10M14 21V5h-4v16M20 21v-7h-4v7M3 21h18"/>',
+    aprenda: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M9 8h7M9 12h5"/>',
     perfil: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
     ciclo: '<circle cx="12" cy="12" r="9"/><path d="M12 12 19 8"/><path d="M3 12h18M12 3v18" opacity=".45"/>',
     sair: '<path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 16l-4-4 4-4M6 12h10"/>'
@@ -19,6 +20,7 @@ C360.ui = (function () {
 
   const NAV = [
     { id: "desafios", href: "desafios.html", label: "Desafios" },
+    { id: "aprenda", href: "aprenda.html", label: "Aprenda" },
     { id: "ranking", href: "ranking.html", label: "Ranking" },
     { id: "perfil", href: "perfil.html", label: "Perfil" }
   ];
@@ -85,8 +87,8 @@ C360.ui = (function () {
     const el = document.getElementById("storage-note");
     if (!el) return;
     el.textContent = {
-      local: "Modo de demonstração: os dados ficam salvos só neste navegador. Para a turma toda competir, ligue o banco de dados (veja database/README.md).",
-      supabase: "Conectado ao banco de dados: pontos e ranking ficam salvos online e aparecem em qualquer aparelho.",
+      local: "Modo teste: salvo só neste aparelho.",
+      supabase: "Conectado ✓",
       api: "Conectado ao banco de dados."
     }[C360.db.mode] || "";
   }

@@ -24,7 +24,7 @@
 
       <div class="auth__intro">
         <h1 class="auth__title">Ciclo 360°</h1>
-        <p class="auth__tagline">Gire o ponteiro, leia as réguas e descubra o seno, o cosseno e a tangente de qualquer ângulo.</p>
+        <p class="auth__tagline">Gire o ponteiro e descubra a resposta.</p>
         <svg class="auth__cycle" id="heroCycle" viewBox="0 0 240 240" role="img" aria-label="Ciclo trigonométrico com o ponteiro girando até 150 graus">
           <circle cx="120" cy="120" r="112" fill="rgba(201,179,245,.08)"/>
           <line x1="14" y1="120" x2="226" y2="120" stroke="#8FB8FF" stroke-width="1.6" opacity=".55"/>
@@ -43,19 +43,17 @@
 
       <ul class="auth__features">
         <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>
-          <span><b>25 cartas-desafio</b>Do fácil ao Desafio 360, em seis temas.</span></li>
+          <span><b>25 desafios</b></span></li>
         <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 12 19 8"/></svg></span>
-          <span><b>Feito para usar com o material</b>No ciclo de papelão ou no ciclo digital.</span></li>
+          <span><b>Use com o ciclo de papelão</b></span></li>
         <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 21V11H4v10M14 21V5h-4v16M20 21v-7h-4v7"/></svg></span>
-          <span><b>Pontos, níveis e ranking</b>Acompanhe sua evolução e a da turma.</span></li>
+          <span><b>Ganhe pontos e medalhas</b></span></li>
       </ul>
     </section>
 
     <main class="auth__main">
       <div class="panel auth__card">
         <div class="radi-hello" id="radi-hello" aria-live="polite"></div>
-        <h2 id="auth-title">Bem-vindo de volta</h2>
-        <p class="lead" id="auth-sub">Entre para continuar seus desafios.</p>
 
         <div class="segmented auth__switch" role="tablist" aria-label="Escolha entre entrar e criar conta">
           <input type="radio" name="modo" id="tab-login" checked><label for="tab-login" role="tab">Entrar</label>
@@ -74,7 +72,7 @@
               <button type="button" class="password__toggle" data-toggle="login-senha">Mostrar</button>
             </div>
           </div>
-          <label class="check"><input type="checkbox" id="login-lembrar" checked> Continuar conectado neste aparelho</label>
+          <label class="check"><input type="checkbox" id="login-lembrar" checked> Lembrar de mim</label>
           <p class="field-error" id="login-erro" role="alert"></p>
           <button class="btn btn--primary btn--block btn--lg" type="submit">Entrar</button>
         </form>
@@ -88,7 +86,7 @@
             </div>
           </div>
           <div class="field">
-            <label for="su-nome">Nome completo</label>
+            <label for="su-nome">Seu nome</label>
             <input class="input" id="su-nome" autocomplete="name" autocapitalize="words" required>
           </div>
           <div class="field">
@@ -103,12 +101,12 @@
           <div class="field">
             <label for="su-senha">Senha</label>
             <div class="password">
-              <input class="input" id="su-senha" type="password" autocomplete="new-password" minlength="6" placeholder="mínimo 6 caracteres" required>
+              <input class="input" id="su-senha" type="password" autocomplete="new-password" minlength="6" placeholder="6 letras ou números" required>
               <button type="button" class="password__toggle" data-toggle="su-senha">Mostrar</button>
             </div>
           </div>
           <p class="field-error" id="su-erro" role="alert"></p>
-          <button class="btn btn--primary btn--block btn--lg" type="submit">Criar conta e começar</button>
+          <button class="btn btn--primary btn--block btn--lg" type="submit">Criar conta</button>
         </form>
         <p class="storage-note" id="storage-note"></p>
       </div>

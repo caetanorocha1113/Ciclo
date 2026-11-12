@@ -334,3 +334,6 @@ table.rank { width: 100%; border-collapse: collapse; font-size: .97rem; }
 .history a:hover { color: var(--accent); }
 .section { margin-top: 34px; }
 .danger-zone { display: flex; flex-wrap: wrap; gap: 10px; }
+
+/* No celular o ciclo digital já está na barra de baixo */
+@media (max-width: 760px) { .page-head > .btn { display: none; } }

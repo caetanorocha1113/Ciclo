@@ -19,7 +19,7 @@
     try {
       linhas = await C360.db.getRanking({ turma: $("f-turma").value });
     } catch (ex) {
-      $("rank-body").innerHTML = `<tr><td colspan="6">Não foi possível carregar o ranking: ${esc(ex.message)}</td></tr>`;
+      $("rank-body").innerHTML = `<tr><td colspan="6">Erro: ${esc(ex.message)}</td></tr>`;
       return;
     }
     render();
@@ -30,7 +30,7 @@
   function render() {
     if (!linhas.length) {
       $("podium").innerHTML = "";
-      $("rank-body").innerHTML = `<tr><td colspan="6" class="muted">Ainda não há alunos nesta turma.</td></tr>`;
+      $("rank-body").innerHTML = `<tr><td colspan="6" class="muted">Ninguém ainda.</td></tr>`;
       return;
     }
     const top = linhas.slice(0, 3);
@@ -66,13 +66,13 @@
     document.body.appendChild(a);
     a.click();
     a.remove();
-    toast("Planilha baixada.", "ok");
+    toast("Baixado!", "ok");
   });
 
   $("btn-demo").addEventListener("click", async () => {
-    if (!confirm("Remover os alunos de exemplo do ranking? As contas reais continuam.")) return;
+    if (!confirm("Tirar os alunos de exemplo?")) return;
     await C360.db.removeDemoData();
-    toast("Alunos de exemplo removidos.", "ok");
+    toast("Pronto!", "ok");
     load();
   });
 

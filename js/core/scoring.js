@@ -65,19 +65,19 @@ C360.scoring = (function () {
   }
 
   const BADGES = [
-    { id: "primeiro", nome: "Primeiro giro", descricao: "Conclua o primeiro desafio.",
+    { id: "primeiro", nome: "Primeiro giro", descricao: "Faça 1 desafio.",
       check: s => s.concluidos >= 1 },
-    { id: "deprimeira", nome: "Sem rodinhas", descricao: "Acerte 5 desafios de primeira, sem dica.",
+    { id: "deprimeira", nome: "Sem rodinhas", descricao: "Acerte 5 de primeira.",
       check: s => s.dePrimeira >= 5 },
-    { id: "faceis", nome: "Base firme", descricao: "Conclua todos os desafios fáceis.",
+    { id: "faceis", nome: "Base firme", descricao: "Faça todos os fáceis.",
       check: s => s.porDificuldade.facil.feitos === s.porDificuldade.facil.total },
-    { id: "radianos", nome: "Fala radiano", descricao: "Conclua todos os desafios de radianos.",
+    { id: "radianos", nome: "Fala radiano", descricao: "Faça todos de radianos.",
       check: s => s.porTema.radianos.feitos === s.porTema.radianos.total },
-    { id: "temas", nome: "Volta por tudo", descricao: "Conclua pelo menos um desafio de cada tema.",
+    { id: "temas", nome: "Volta por tudo", descricao: "Faça 1 de cada tema.",
       check: s => Object.values(s.porTema).every(t => t.feitos > 0) },
-    { id: "d360", nome: "Encarou o 360", descricao: "Conclua um desafio da dificuldade Desafio 360.",
+    { id: "d360", nome: "Encarou o 360", descricao: "Faça 1 Desafio 360.",
       check: s => s.porDificuldade.desafio360.feitos >= 1 },
-    { id: "mestre", nome: "Volta completa", descricao: "Conclua todos os desafios.",
+    { id: "mestre", nome: "Volta completa", descricao: "Faça todos.",
       check: s => s.concluidos === s.total && s.total > 0 }
   ];
 
