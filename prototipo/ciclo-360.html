@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="theme-color" content="#2A1748">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ciclo 360°: gire e descubra – protótipo digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3F0F8; --grid:rgba(91,42,158,.065); --paper:#FFFFFF; --ink:#1D2A33; --muted:#53636E;
+  --line:#C9D3DA; --sen:#C0392B; --cos:#1F5FAE; --tg:#7A5418; --ok:#1E7A45; --bad:#B3261E;
+  --chip:#F2F5F7; --accent:#6A2FB8;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#151B20; --grid:rgba(160,200,230,.06); --paper:#1F272E; --ink:#E7EDF1; --muted:#9FB0BC;
+    --line:#34414B; --sen:#FF7A6B; --cos:#7DB3FF; --tg:#E2B66E; --ok:#5FD08F; --bad:#FF8A80;
+    --chip:#28323A; --accent:#B794F6; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#151B20; --grid:rgba(160,200,230,.06); --paper:#1F272E; --ink:#E7EDF1; --muted:#9FB0BC;
+  --line:#34414B; --sen:#FF7A6B; --cos:#7DB3FF; --tg:#E2B66E; --ok:#5FD08F; --bad:#FF8A80;
+  --chip:#28323A; --accent:#B794F6; color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:22px 22px;
+  font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:17px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding:22px 16px 60px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 20px;flex-wrap:wrap}
+.back{display:inline-flex;align-items:center;gap:6px;padding:10px 18px 10px 12px;min-height:44px;border-radius:999px;background:var(--accent);color:var(--paper);text-decoration:none;font-weight:700;font-size:.98rem;box-shadow:0 8px 20px -10px rgba(74,29,138,.6)}
+.back:hover{filter:brightness(1.08)}
+.back svg{width:20px;height:20px}
+.topbar__link{color:var(--accent);font-weight:700;text-decoration:none;padding:10px 6px;min-height:44px;display:inline-flex;align-items:center}
+.topbar__link:hover{text-decoration:underline}
+header h1{font-family:"Kalam","Segoe Print","Bradley Hand","Atkinson Hyperlegible",sans-serif;font-weight:700;font-size:clamp(2rem,5vw,3.1rem);line-height:1.05;margin:0 0 6px;color:var(--accent)}
+header p{margin:0;color:var(--muted);max-width:62ch}
+.main{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:22px;margin-top:22px;align-items:start}
+@media (max-width:860px){.main{grid-template-columns:1fr}}
+.scene{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:10px}
+.scene svg{width:100%;height:auto;display:block;touch-action:none;user-select:none}
+.hint{font-size:.9rem;color:var(--muted);margin:8px 6px 2px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px}
+.panel+ .panel{margin-top:16px}
+h2{font-family:"Kalam","Segoe Print","Bradley Hand","Atkinson Hyperlegible",sans-serif;font-size:1.6rem;margin:0 0 10px;line-height:1.15}
+h3{font-size:1.05rem;margin:0 0 6px}
+.angle{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.angle .deg{font-size:3rem;font-weight:700;line-height:1}
+.angle .rad{font-size:1.3rem;color:var(--muted)}
+.badge{display:inline-block;padding:3px 10px;border-radius:999px;background:var(--chip);font-size:.9rem;border:1px solid var(--line)}
+.reads{display:grid;gap:10px;margin:16px 0}
+.read{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center}
+.read b{font-size:1.05rem}
+.bar{height:10px;background:var(--chip);border-radius:6px;position:relative;overflow:hidden;border:1px solid var(--line)}
+.bar i{position:absolute;top:0;bottom:0;left:50%;width:0}
+.bar::after{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:var(--muted)}
+.val{font-variant-numeric:tabular-nums;text-align:right;min-width:9.5em}
+.sen{color:var(--sen)} .cos{color:var(--cos)} .tg{color:var(--tg)}
+.explain{background:var(--chip);border-radius:10px;padding:12px 14px;margin:0}
+.ctrls{display:grid;gap:12px;margin-top:16px}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button{font:inherit;font-size:.95rem;border:1px solid var(--line);background:var(--chip);color:var(--ink);border-radius:8px;padding:7px 12px;cursor:pointer}
+button:hover{border-color:var(--muted)}
+button.primary{background:var(--accent);color:var(--paper);border-color:var(--accent)}
+:focus-visible{outline:3px solid var(--cos);outline-offset:2px}
+label.check{display:flex;gap:8px;align-items:flex-start;font-size:.95rem;cursor:pointer}
+label.check input{margin-top:5px;accent-color:var(--accent)}
+.status{font-size:.95rem;min-height:1.4em}
+.status.ok{color:var(--ok)} .status.bad{color:var(--bad)}
+section.block{margin-top:34px}
+.pieces{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.piece{text-align:left;display:grid;grid-template-columns:18px 1fr;gap:10px;padding:10px 12px;background:var(--paper)}
+.piece .sw{width:18px;height:18px;border-radius:4px;margin-top:3px;border:1px solid rgba(0,0,0,.25)}
+.piece small{display:block;color:var(--muted);font-size:.86rem}
+.signs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:560px){.signs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.q{border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
+.q h3{font-size:.95rem}
+.q button{display:block;width:100%;margin-top:6px}
+.q button.right{border-color:var(--ok);color:var(--ok)}
+.q button.wrong{border-color:var(--bad);color:var(--bad)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.card .n{font-family:"Kalam",cursive;font-size:1.3rem;color:var(--accent);line-height:1}
+.card p{margin:0}
+.card .fb{font-size:.95rem}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.steps li{counter-increment:s;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 16px 14px 58px;position:relative}
+.steps li::before{content:counter(s);position:absolute;left:16px;top:12px;font-family:"Kalam",cursive;font-size:1.8rem;color:var(--accent);line-height:1}
+.steps b{display:block}
+.lead{color:var(--muted);max-width:70ch;margin:0 0 14px}
+footer{margin-top:40px;color:var(--muted);font-size:.9rem}
+.hl{animation:hl 1.4s ease-in-out 3}
+@keyframes hl{0%,100%{opacity:1}50%{opacity:.25}}
+@media (prefers-reduced-motion: reduce){.hl{animation:none;outline:4px dashed #ff3b30}}
+.svg-hand{font-family:"Kalam","Segoe Print","Bradley Hand",sans-serif}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <nav class="topbar" aria-label="Navegação do site">
+    <a class="back" href="../desafios.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Voltar aos desafios</a>
+    <a class="topbar__link" href="../ranking.html">Ranking</a>
+  </nav>
+  <h1>Ciclo 360°: gire e descubra</h1>
+  <p>Protótipo digital do material que será construído em papelão. Tudo o que aparece aqui existe na versão física: o ponteiro gira, as réguas transparentes deslizam e o barbante marca a tangente. Escala: raio de 10 cm = 1 unidade.</p>
+</header>
+
+<div class="main">
+  <div class="scene">
+    <svg id="svg" viewBox="0 0 600 800" role="img" aria-labelledby="svgT svgD">
+      <title id="svgT">Ciclo trigonométrico montado em uma caixa de papelão</title>
+      <desc id="svgD">Disco com ângulos em graus e radianos, ponteiro giratório, réguas transparentes de seno e cosseno e reta da tangente com barbante.</desc>
+      <g id="p-caixa">
+        <rect x="8" y="8" width="584" height="784" rx="6" fill="#B08150"/>
+        <rect x="30" y="30" width="540" height="740" rx="3" fill="#C9A06A"/>
+        <path d="M30 30 L8 8 M570 30 L592 8 M30 770 L8 792 M570 770 L592 792" stroke="#8E6638" stroke-width="2"/>
+      </g>
+      <g id="p-disco">
+        <circle cx="300" cy="390" r="258" fill="#DDC193" stroke="#B4935F" stroke-width="2"/>
+        <g id="quads"></g>
+        <g id="radials"></g>
+        <circle cx="300" cy="390" r="200" fill="none" stroke="#1E6B3A" stroke-width="3"/>
+        <g id="axes"></g>
+        <g id="labels" class="svg-hand"></g>
+      </g>
+      <g id="p-trilhos">
+        <rect x="36" y="150" width="12" height="480" rx="6" fill="#F4F4F4" stroke="#B9B9B9"/>
+        <rect x="552" y="150" width="12" height="480" rx="6" fill="#F4F4F4" stroke="#B9B9B9"/>
+        <rect x="70" y="134" width="460" height="12" rx="6" fill="#F4F4F4" stroke="#B9B9B9"/>
+        <rect x="70" y="634" width="460" height="12" rx="6" fill="#F4F4F4" stroke="#B9B9B9"/>
+        <path d="M42 150 V630 M558 150 V630 M70 140 H530 M70 640 H530" stroke="#E57373" stroke-width="2" stroke-dasharray="10 10"/>
+      </g>
+      <g id="p-tangente">
+        <rect x="496" y="40" width="8" height="720" rx="4" fill="#E2C48C" stroke="#A9884F"/>
+        <g id="tgticks" class="svg-hand"></g>
+      </g>
+      <line id="p-barbante" x1="300" y1="390" x2="500" y2="390" stroke="#6B4F2A" stroke-width="2.2" stroke-linecap="round"/>
+      <circle id="tgDot" cx="500" cy="390" r="7" fill="#7A5418" stroke="#fff" stroke-width="2"/>
+      <g id="p-pet-sen" style="cursor:ns-resize">
+        <rect id="senStrip" x="42" y="378" width="516" height="24" fill="rgba(170,215,240,.38)" stroke="rgba(70,130,170,.85)"/>
+        <line id="senLine" x1="42" y1="390" x2="558" y2="390" stroke="#C0392B" stroke-width="2.5"/>
+      </g>
+      <g id="p-pet-cos" style="cursor:ew-resize">
+        <rect id="cosStrip" x="488" y="140" width="24" height="500" fill="rgba(170,215,240,.38)" stroke="rgba(70,130,170,.85)"/>
+        <line id="cosLine" x1="500" y1="140" x2="500" y2="640" stroke="#1F5FAE" stroke-width="2.5"/>
+      </g>
+      <g id="p-ponteiro">
+        <g id="pointer">
+          <rect x="296" y="382" width="208" height="16" rx="8" fill="#EED7A8" stroke="#B48F55" stroke-width="1.5"/>
+          <path d="M310 390 H492" stroke="#D9BE8A" stroke-width="2"/>
+          <circle cx="500" cy="390" r="6" fill="#1D2A33"/>
+        </g>
+      </g>
+      <g id="p-colchete">
+        <circle cx="300" cy="390" r="10" fill="#D4AF37" stroke="#8A6D1A" stroke-width="2"/>
+        <path d="M295 390 H305" stroke="#8A6D1A" stroke-width="2"/>
+      </g>
+    </svg>
+    <p class="hint" id="hint">Arraste o ponteiro em qualquer ponto do disco, ou use o controle ao lado. Eixo vermelho: seno (y). Eixo azul: cosseno (x).</p>
+  </div>
+
+  <div>
+    <div class="panel" aria-live="polite">
+      <div class="angle"><span class="deg" id="oDeg">150°</span><span class="rad" id="oRad">5π/6 rad</span><span class="badge" id="oQuad">2º quadrante</span></div>
+      <div class="reads">
+        <div class="read"><b class="sen">sen</b><div class="bar"><i id="bSen" style="background:var(--sen)"></i></div><span class="val sen" id="oSen"></span></div>
+        <div class="read"><b class="cos">cos</b><div class="bar"><i id="bCos" style="background:var(--cos)"></i></div><span class="val cos" id="oCos"></span></div>
+        <div class="read"><b class="tg">tg</b><div class="bar"><i id="bTg" style="background:var(--tg)"></i></div><span class="val tg" id="oTg"></span></div>
+      </div>
+      <p class="explain" id="oExplain"></p>
+      <div class="ctrls">
+        <label for="rng" class="badge" style="border:none;background:none;padding:0">Ângulo do ponteiro</label>
+        <input type="range" id="rng" min="0" max="359" value="150" aria-label="Ângulo em graus">
+        <div class="row">
+          <button id="bMinus" aria-label="Ângulo notável anterior">◀ anterior</button>
+          <button id="bPlus" aria-label="Próximo ângulo notável">próximo ▶</button>
+          <button id="bSpin" class="primary">Dar uma volta completa</button>
+        </div>
+        <label class="check"><input type="checkbox" id="cSnap" checked> Encaixar nos ângulos notáveis (como as marcas gravadas no disco)</label>
+        <label class="check"><input type="checkbox" id="cAuto" checked> Réguas acompanham o ponteiro. Desmarque para deslizar as réguas com a mão, como o aluno fará no material.</label>
+        <div class="status" id="oStatus"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="block">
+  <h2>Peças do protótipo</h2>
+  <p class="lead">Toque em uma peça para vê-la piscar no desenho. Entre parênteses, o material do protótipo em papelão; depois, o do produto final.</p>
+  <div class="pieces" id="pieces"></div>
+</section>
+
+<section class="block">
+  <h2>Placas de sinais</h2>
+  <p class="lead">No material, cada quadrante tem três plaquinhas presas com velcro. O aluno gira o ponteiro, observa para onde as réguas vão e monta os sinais. Toque nas placas para trocar entre ?, + e −.</p>
+  <div class="signs" id="signs"></div>
+  <div class="row" style="margin-top:12px">
+    <button class="primary" id="bCheckSigns">Conferir sinais</button>
+    <button id="bResetSigns">Recomeçar</button>
+  </div>
+  <p class="status" id="oSigns"></p>
+</section>
+
+<section class="block">
+  <h2>Cartas-desafio</h2>
+  <p class="lead">Vão num envelope no verso do material. O aluno lê, gira o ponteiro até a resposta e confere. Aqui, gire o ciclo lá em cima e toque em “Conferir com o ciclo”.</p>
+  <div class="cards" id="cards"></div>
+</section>
+
+<section class="block">
+  <h2>Como o material ensina</h2>
+  <p class="lead">A proposta de atividade segue uma sequência que vai do concreto ao abstrato. O objetivo é que, no fim, o aluno consiga resolver sem o material.</p>
+  <ol class="steps">
+    <li><b>Explorar</b>Girar livremente e descrever o que acontece com as réguas: quando o seno cresce, quando o cosseno fica negativo, onde o barbante some.</li>
+    <li><b>Medir</b>Ler seno e cosseno de 30°, 45° e 60° nas réguas e anotar numa tabela. Com raio de 10 cm, sen 30° mede 5 cm, ou seja, 0,5.</li>
+    <li><b>Comparar</b>Encontrar 150°, 210° e 330° e perceber que as réguas param na mesma distância de 30°, só trocando de lado. Daí nasce a redução ao 1º quadrante.</li>
+    <li><b>Generalizar</b>Montar as placas de sinais sem girar e depois conferir girando. O sinal deixa de ser regra decorada e vira consequência da posição do ponto.</li>
+    <li><b>Abstrair</b>Resolver as cartas-desafio sem o material e usá-lo só para conferir. Quando o ciclo fica dispensável, a aprendizagem aconteceu.</li>
+  </ol>
+</section>
+
+<footer>Desafio 360° – Matemática que Transforma. Protótipo digital para apresentação da ideia; a versão física usa papelão e materiais recicláveis no protótipo e MDF com corte a laser no produto final.</footer>
+</div>
+
+<script>
+(function(){
+const NS="http://www.w3.org/2000/svg";
+const CX=300, CY=390, U=200;
+const NOT=[0,30,45,60,90,120,135,150,180,210,225,240,270,300,315,330];
+const RAD={0:"0",30:"π/6",45:"π/4",60:"π/3",90:"π/2",120:"2π/3",135:"3π/4",150:"5π/6",180:"π",210:"7π/6",225:"5π/4",240:"4π/3",270:"3π/2",300:"5π/3",315:"7π/4",330:"11π/6"};
+const SB={0:"0",30:"1/2",45:"√2/2",60:"√3/2",90:"1"};
+const TB={0:"0",30:"√3/3",45:"1",60:"√3"};
+const $=id=>document.getElementById(id);
+function el(tag,attrs,parent,text){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;parent.appendChild(e);return e;}
+const fmt=v=>{let s=(Math.abs(v)<0.005?0:v).toFixed(2).replace(".",",");return s.replace("-","−");};
+const P=(deg,r)=>[CX+r*Math.cos(deg*Math.PI/180),CY-r*Math.sin(deg*Math.PI/180)];
+
+/* desenho fixo */
+const qcol=["#F6D55C","#9ED39A","#9EC6EE","#F2A7C0"];
+for(let q=0;q<4;q++){const a=P(q*90,200),b=P(q*90+90,200);
+  el("path",{d:`M${CX} ${CY} L${a[0]} ${a[1]} A200 200 0 0 0 ${b[0]} ${b[1]} Z`,fill:qcol[q],opacity:".45"},$("quads"));}
+const qn=["I","II","III","IV"];
+for(let q=0;q<4;q++){const p=P(q*90+45,125);el("text",{x:p[0],y:p[1]+8,"text-anchor":"middle","font-size":"26","fill":"#5C4A2E",opacity:".55","class":"svg-hand"},$("labels"),qn[q]);}
+NOT.forEach(d=>{const a=P(d,0),b=P(d,200);
+  if(d%90)el("line",{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:"#1E6B3A","stroke-width":".8",opacity:".45"},$("radials"));
+  const t1=P(d,193),t2=P(d,209);el("line",{x1:t1[0],y1:t1[1],x2:t2[0],y2:t2[1],stroke:"#1E6B3A","stroke-width":"2.5"},$("radials"));
+  let L=P(d,232),anc="middle";if(d===0){L=[510,CY-6];anc="start";}if(d===30){L=[510,L[1]+4];anc="start";}if(d===330){L=[510,L[1]+12];anc="start";}el("text",{x:L[0],y:L[1]+6,"text-anchor":anc,"font-size":"19",fill:"#14502B","font-weight":"700"},$("labels"),d+"°");
+  let r=P(d,168);let dx=0,dy=6;
+  if(d===0){dy=-8;} if(d===180){dy=-8;} if(d===90){dx=22;} if(d===270){dx=26;}
+  el("text",{x:r[0]+dx,y:r[1]+dy,"text-anchor":"middle","font-size":"15",fill:"#7A2E1F"},$("labels"),RAD[d]);
+});
+const ax=$("axes");
+el("line",{x1:56,y1:CY,x2:548,y2:CY,stroke:"#1F5FAE","stroke-width":"2.5"},ax);
+el("line",{x1:CX,y1:146,x2:CX,y2:634,stroke:"#C0392B","stroke-width":"2.5"},ax);
+[[.5,"0,5"],[.71,"0,71"],[.87,"0,87"],[1,""]].forEach(([v,t])=>{
+  [1,-1].forEach(s=>{const x=CX+s*v*U,y=CY-s*v*U;
+    el("line",{x1:x,y1:CY-6,x2:x,y2:CY+6,stroke:"#1D2A33","stroke-width":"1.5"},ax);
+    if(t)el("text",{x:x,y:CY+(v===.87?36:22),"text-anchor":"middle","font-size":"12",fill:"#1D2A33"},ax,(s<0?"−":"")+t);
+    el("line",{x1:CX-6,y1:y,x2:CX+6,y2:y,stroke:"#1D2A33","stroke-width":"1.5"},ax);
+    if(t)el("text",{x:CX-10,y:y+4,"text-anchor":"end","font-size":"12",fill:"#1D2A33"},ax,(s<0?"−":"")+t);
+  });
+});
+[[0,""],[.58,""],[1,"1"],[1.73,"1,73"]].forEach(([v,t])=>{[1,-1].forEach(s=>{if(v===0&&s<0)return;const y=CY-s*v*U;
+  el("line",{x1:490,y1:y,x2:510,y2:y,stroke:"#7A5418","stroke-width":"2"},$("tgticks"));
+  if(t)el("text",{x:514,y:y+5,"font-size":"14",fill:"#5A3E10"},$("tgticks"),(s<0&&v?"−":"")+t);});});
+el("text",{x:500,y:25,"text-anchor":"middle","font-size":"15",fill:"#FFF7E6","class":"svg-hand"},$("tgticks"),"reta da tangente (x = 1)");
+
+/* estado */
+let ang=150, sv=.5, cv=-.866, auto=true, snap=true, spinning=false;
+function exactSin(a){if(a===0||a===180)return"0";const ref=a<=90?a:a<=180?180-a:a<=270?a-180:360-a;return(a>180?"−":"")+SB[ref];}
+function exactCos(a){if(a===90||a===270)return"0";const ref=a<=90?a:a<=180?180-a:a<=270?a-180:360-a;return((a>90&&a<270)?"−":"")+SB[90-ref];}
+function exactTg(a){if(a===90||a===270)return null;const ref=a<=90?a:a<=180?180-a:a<=270?a-180:360-a;if(ref===0)return"0";return(((a>90&&a<180)||(a>270))?"−":"")+TB[ref];}
+function quad(a){if(a%90===0)return 0;return Math.floor(a/90)+1;}
+function setBar(id,v,max){const b=$(id),w=Math.min(Math.abs(v)/max,1)*50;b.style.width=w+"%";b.style.left=(v>=0?50:50-w)+"%";}
+
+function render(){
+  const s=Math.sin(ang*Math.PI/180), c=Math.cos(ang*Math.PI/180);
+  $("pointer").setAttribute("transform",`rotate(${-ang} ${CX} ${CY})`);
+  if(auto){sv=s;cv=c;}
+  const sy=CY-sv*U, cx=CX+cv*U;
+  $("senStrip").setAttribute("y",sy-12);$("senLine").setAttribute("y1",sy);$("senLine").setAttribute("y2",sy);
+  $("cosStrip").setAttribute("x",cx-12);$("cosLine").setAttribute("x1",cx);$("cosLine").setAttribute("x2",cx);
+  const nt=Math.abs(c)<1e-9;
+  const tv=nt?Infinity:s/c, tip=P(ang,200);
+  const bb=$("p-barbante"), dot=$("tgDot");
+  if(nt){bb.setAttribute("x1",CX);bb.setAttribute("y1",CY);bb.setAttribute("x2",tip[0]);bb.setAttribute("y2",tip[1]);dot.style.display="none";}
+  else{let ty=CY-tv*U;const clipped=ty<40||ty>760;ty=Math.max(40,Math.min(760,ty));
+    const tx=clipped?CX+(ty-CY)/(-tv):500;
+    if(c>0){bb.setAttribute("x1",CX);bb.setAttribute("y1",CY);}else{bb.setAttribute("x1",tip[0]);bb.setAttribute("y1",tip[1]);}
+    bb.setAttribute("x2",tx);bb.setAttribute("y2",ty);dot.style.display=clipped?"none":"";dot.setAttribute("cy",ty);}
+  const isN=NOT.includes(ang);
+  $("oDeg").textContent=ang+"°";
+  $("oRad").textContent=isN?RAD[ang]+" rad":"≈ "+fmt(ang*Math.PI/180)+" rad";
+  const q=quad(ang);$("oQuad").textContent=q?q+"º quadrante":"sobre um eixo";
+  $("oSen").textContent=(isN?exactSin(ang)+" ≈ ":"")+fmt(s);
+  $("oCos").textContent=(isN?exactCos(ang)+" ≈ ":"")+fmt(c);
+  $("oTg").textContent=nt?"não existe":(isN?exactTg(ang)+" ≈ ":"")+fmt(tv);
+  setBar("bSen",s,1);setBar("bCos",c,1);setBar("bTg",nt?0:tv,2);
+  $("oExplain").textContent=explain(ang,s,c,nt);
+  $("rng").value=ang;
+  status(s,c);
+}
+function explain(a,s,c,nt){
+  const ref=a<=90?a:a<=180?180-a:a<=270?a-180:360-a;
+  if(nt)return`Em ${a}° o ponto está no eixo y. A régua do cosseno passa pelo centro (cos = 0) e o barbante fica paralelo à reta da tangente: eles nunca se cruzam, por isso a tangente não existe.`;
+  if(a===0||a===180)return`Em ${a}° o ponto está no eixo x. A régua do seno passa pelo centro (sen = 0) e o barbante cruza a reta da tangente bem na altura zero.`;
+  const lado=c>0?"à direita do eixo y (cosseno positivo)":"à esquerda do eixo y (cosseno negativo)";
+  const alt=s>0?"acima do eixo x (seno positivo)":"abaixo do eixo x (seno negativo)";
+  const t=(s/c)>0?"O barbante cruza a reta da tangente acima do eixo x: tangente positiva.":"O barbante cruza a reta da tangente abaixo do eixo x: tangente negativa.";
+  let sim=a!==ref?` As réguas estão à mesma distância dos eixos que em ${ref}°; só o lado mudou.`:" Este é o ângulo de referência: os outros quadrantes repetem estes comprimentos.";
+  return`O ponto está ${alt} e ${lado}. ${t}${sim}`;
+}
+function status(s,c){
+  const st=$("oStatus");
+  if(auto){st.className="status";st.textContent="";$("hint").textContent="Arraste o ponteiro em qualquer ponto do disco, ou use o controle ao lado. Eixo vermelho: seno (y). Eixo azul: cosseno (x).";return;}
+  $("hint").textContent="Modo manual: arraste a tira vermelha (seno) para cima ou para baixo e a azul (cosseno) para os lados, até encostarem na ponta do ponteiro.";
+  const okS=Math.abs(sv-s)<.03, okC=Math.abs(cv-c)<.03;
+  st.className="status"+(okS&&okC?" ok":"");
+  st.textContent=`Régua do seno marca ${fmt(sv)} ${okS?"✓ encostou":"(ainda não encostou)"} · régua do cosseno marca ${fmt(cv)} ${okC?"✓ encostou":"(ainda não encostou)"}`;
+}
+function setAng(a){a=((Math.round(a)%360)+360)%360;
+  if(snap){let best=NOT[0],bd=999;NOT.concat([360]).forEach(n=>{const d=Math.abs(n-a);if(d<bd){bd=d;best=n%360;}});a=best;}
+  ang=a;render();}
+
+/* interação */
+const svg=$("svg");
+function pt(e){const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse());}
+let drag=null;
+svg.addEventListener("pointerdown",e=>{
+  const t=e.target;
+  if(!auto&&t.closest("#p-pet-sen"))drag="sen";
+  else if(!auto&&t.closest("#p-pet-cos"))drag="cos";
+  else drag="ang";
+  svg.setPointerCapture(e.pointerId);move(e);});
+svg.addEventListener("pointermove",e=>{if(drag)move(e);});
+svg.addEventListener("pointerup",()=>drag=null);
+svg.addEventListener("pointercancel",()=>drag=null);
+function move(e){const p=pt(e);
+  if(drag==="ang"){if(Math.hypot(p.x-CX,p.y-CY)<12)return;setAng(Math.atan2(CY-p.y,p.x-CX)*180/Math.PI);}
+  else if(drag==="sen"){sv=Math.max(-1.1,Math.min(1.1,(CY-p.y)/U));render();}
+  else if(drag==="cos"){cv=Math.max(-1.1,Math.min(1.1,(p.x-CX)/U));render();}}
+$("rng").addEventListener("input",e=>{const s0=snap;snap=false;setAng(+e.target.value);snap=s0;});
+$("rng").addEventListener("change",e=>setAng(+e.target.value));
+$("bMinus").onclick=()=>{const s0=snap;snap=false;const prev=[...NOT].reverse().find(n=>n<ang);setAng(prev===undefined?330:prev);snap=s0;};
+$("bPlus").onclick=()=>{const s0=snap;snap=false;const nx=NOT.find(n=>n>ang);setAng(nx===undefined?0:nx);snap=s0;};
+$("cSnap").onchange=e=>{snap=e.target.checked;setAng(ang);};
+$("cAuto").onchange=e=>{auto=e.target.checked;
+  ["p-pet-sen","p-pet-cos"].forEach(id=>$(id).style.pointerEvents=auto?"none":"auto");
+  if(!auto){sv=0;cv=0;}render();};
+["p-pet-sen","p-pet-cos"].forEach(id=>$(id).style.pointerEvents="none");
+$("bSpin").onclick=()=>{if(spinning)return;spinning=true;const s0=snap;snap=false;let a=0;const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const step=()=>{a+=reduce?15:1.2;setAng(a>=360?0:a);if(a<360)requestAnimationFrame(step);else{snap=s0;spinning=false;setAng(0);}};
+  if(reduce){const it=setInterval(()=>{a+=15;setAng(a%360);if(a>=360){clearInterval(it);snap=s0;spinning=false;}},250);}else requestAnimationFrame(step);};
+
+/* peças */
+const PIECES=[
+ ["p-disco","#DDC193","Disco com o ciclo","Molde impresso colado no papelão; no final, MDF gravado a laser. Raio de 10 cm, graus por fora e radianos por dentro."],
+ ["p-ponteiro","#EED7A8","Ponteiro","Palito de picolé com 10 cm do centro à ponta; no final, acrílico transparente."],
+ ["p-colchete","#D4AF37","Eixo de giro","Colchete bailarina atravessando o centro, firme para não ter folga."],
+ ["p-pet-sen","#E8B4AE","Régua do seno","Tira de garrafa PET com linha vermelha. Sobe e desce; a leitura é feita no eixo y."],
+ ["p-pet-cos","#AFC6E6","Régua do cosseno","Tira de PET com linha azul. Vai para os lados; a leitura é feita no eixo x."],
+ ["p-trilhos","#F4F4F4","Trilhos","Canudos colados nas bordas da caixa, onde as tiras de PET deslizam."],
+ ["p-tangente","#E2C48C","Reta da tangente","Palito de churrasco a 10 cm à direita do centro (x = 1), com escala marcada."],
+ ["p-barbante","#6B4F2A","Barbante","Preso no centro, esticado ao longo do ponteiro até a reta da tangente."],
+ ["p-caixa","#B08150","Caixa-base","Tampa de caixa de papelão reaproveitada; no final, base de MDF."]];
+PIECES.forEach(([id,col,t,d])=>{const b=document.createElement("button");b.className="piece";
+  b.innerHTML=`<span class="sw" style="background:${col}"></span><span><b>${t}</b><small>${d}</small></span>`;
+  b.onclick=()=>{const g=$(id);g.classList.remove("hl");void g.getBBox();g.classList.add("hl");svg.scrollIntoView({behavior:"smooth",block:"center"});};
+  $("pieces").appendChild(b);});
+
+/* sinais */
+const ANS={1:["+","+","+"],2:["+","−","−"],3:["−","−","+"],4:["−","+","−"]};
+const FN=["sen","cos","tg"];const signState={};
+for(let q=1;q<=4;q++){const d=document.createElement("div");d.className="q";d.innerHTML=`<h3>${q}º quadrante</h3>`;
+  FN.forEach((f,i)=>{const b=document.createElement("button");b.dataset.q=q;b.dataset.i=i;signState[q+"-"+i]="?";b.textContent=`${f}  ?`;
+    b.onclick=()=>{const k=q+"-"+i;signState[k]=signState[k]==="?"?"+":signState[k]==="+"?"−":"?";b.textContent=`${f}  ${signState[k]}`;b.classList.remove("right","wrong");};
+    d.appendChild(b);});$("signs").appendChild(d);}
+$("bCheckSigns").onclick=()=>{let ok=0,emp=0;document.querySelectorAll(".q button").forEach(b=>{const k=b.dataset.q+"-"+b.dataset.i,v=signState[k];
+  b.classList.remove("right","wrong");if(v==="?"){emp++;return;}if(v===ANS[b.dataset.q][b.dataset.i]){b.classList.add("right");ok++;}else b.classList.add("wrong");});
+  const o=$("oSigns");if(emp){o.className="status bad";o.textContent=`Faltam ${emp} placas. Gire o ponteiro até cada quadrante e veja para que lado as réguas vão.`;}
+  else if(ok===12){o.className="status ok";o.textContent="Todas certas! Os sinais saíram da posição do ponto, não de uma regra decorada.";}
+  else{o.className="status bad";o.textContent=`${ok} de 12 corretas. Para as marcadas em vermelho, gire até o quadrante: régua abaixo do eixo x = seno negativo; à esquerda do eixo y = cosseno negativo.`;}};
+$("bResetSigns").onclick=()=>{document.querySelectorAll(".q button").forEach(b=>{const k=b.dataset.q+"-"+b.dataset.i;signState[k]="?";b.textContent=`${FN[b.dataset.i]}  ?`;b.classList.remove("right","wrong");});$("oSigns").textContent="";};
+
+/* cartas */
+const CARDS=[
+ ["Encontre um ângulo do 2º quadrante em que o seno vale 1/2.",a=>a===150,"Pense em 30°: qual ângulo do 2º quadrante deixa a régua do seno na mesma altura?","Isso! sen 150° = 1/2, a mesma altura de 30°, só que à esquerda."],
+ ["Em qual ângulo o seno e o cosseno são iguais e positivos?",a=>a===45,"As duas réguas precisam ficar à mesma distância do centro, no 1º quadrante.","Exato: 45°, com sen = cos = √2/2 ≈ 0,71."],
+ ["Gire até o ângulo em que o cosseno vale −1.",a=>a===180,"A régua azul precisa ir até a ponta esquerda do eixo x.","Isso: cos 180° = −1. O ponto está na extremidade esquerda."],
+ ["Leve o ponteiro até 4π/3 rad.",a=>a===240,"π é meia volta. 4π/3 é meia volta mais um terço de π (60°).","Certo: 4π/3 rad = 240°, no 3º quadrante."],
+ ["Ache o ângulo do 4º quadrante com o mesmo cosseno de 60°.",a=>a===300,"A régua azul fica no mesmo lugar de 60°; o ponto só desce para baixo do eixo x.","Isso! cos 300° = cos 60° = 1/2."],
+ ["Gire até um ângulo em que a tangente não existe e observe o barbante.",a=>a===90||a===270,"Procure onde o barbante fica paralelo à reta da tangente.","Isso: em 90° e 270° o barbante nunca encontra a reta x = 1."]];
+CARDS.forEach(([t,chk,hint,ok],i)=>{const c=document.createElement("div");c.className="card";
+  c.innerHTML=`<span class="n">Carta ${i+1}</span><p>${t}</p><div class="row"><button>Conferir com o ciclo</button></div><p class="fb status"></p>`;
+  const fb=c.querySelector(".fb");c.querySelector("button").onclick=()=>{if(chk(ang)){fb.className="fb status ok";fb.textContent=ok;}else{fb.className="fb status bad";fb.textContent=`O ponteiro está em ${ang}°. Dica: ${hint}`;}};
+  $("cards").appendChild(c);});
+
+render();
+})();
+</script>
+</body>
+</html>

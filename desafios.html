@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2A1748">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%232A1748'/%3E%3Ccircle cx='20' cy='20' r='12' fill='none' stroke='%23C9B3F5' stroke-width='3'/%3E%3Cpath d='M20 20 28 14' stroke='%23C9B3F5' stroke-width='3.4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Kalam:wght@400;700&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/lesson.css">
+  <title>Desafios · Ciclo 360°</title>
+</head>
+<body>
+  <header id="app-header"></header>
+  <main class="container page">
+    <div class="page-head">
+      <div>
+        <h1>Desafios</h1>
+        <p class="lead">Cada carta diz o que fazer com o ciclo. Tenha o material de papelão em mãos ou use o ciclo digital.</p>
+      </div>
+      <a class="btn btn--soft" href="prototipo/ciclo-360.html" target="_blank" rel="noopener">Abrir ciclo digital ↗</a>
+    </div>
+
+    <section class="summary" aria-label="Seu progresso">
+      <div class="stat level-card">
+        <div class="stat__label" id="lvl-label">Nível 1</div>
+        <div class="stat__value" id="lvl-name">Iniciante</div>
+        <div class="meter"><span id="lvl-bar" style="width:0%"></span></div>
+        <div class="stat__label" id="lvl-next"></div>
+      </div>
+      <div class="stat"><div class="stat__value" id="st-points">0</div><div class="stat__label">pontos</div></div>
+      <div class="stat"><div class="stat__value" id="st-done">0/0</div><div class="stat__label">desafios concluídos</div></div>
+      <div class="stat stat--streak" id="st-streak-box"><div class="stat__value">🔥 <span id="st-streak">0</span></div><div class="stat__label" id="st-streak-label">dias seguidos</div></div>
+    </section>
+
+    <section id="next-up" aria-label="Próximo desafio sugerido"></section>
+
+    <section class="toolbar" aria-label="Filtros">
+      <div class="toolbar__group toolbar__group--chips">
+        <span class="toolbar__label" id="lbl-diff">Etapa</span>
+        <div class="chips" id="f-diff" role="group" aria-labelledby="lbl-diff"></div>
+      </div>
+      <div class="field">
+        <label for="f-tema">Tema</label>
+        <select class="input" id="f-tema"></select>
+      </div>
+      <div class="field">
+        <label for="f-status">Situação</label>
+        <select class="input" id="f-status">
+          <option value="todos">Todos</option>
+          <option value="pendentes">A fazer</option>
+          <option value="concluidos">Concluídos</option>
+        </select>
+      </div>
+    </section>
+
+    <div class="stages" id="cards" aria-live="polite"><div class="loading">Carregando desafios…</div></div>
+    <p class="storage-note" id="storage-note"></p>
+  </main>
+
+
+  <script src="js/vendor/supabase-2.117.2.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/data/challenges.js"></script>
+  <script src="js/core/answers.js"></script>
+  <script src="js/core/scoring.js"></script>
+  <script src="js/services/storage-local.js"></script>
+  <script src="js/services/storage-api.js"></script>
+  <script src="js/services/storage-supabase.js"></script>
+  <script src="js/services/db.js"></script>
+  <script src="js/ui/layout.js"></script>
+  <script src="js/ui/mascot.js"></script>
+  <script src="js/ui/sfx.js"></script>
+  <script src="js/ui/lesson.js"></script>
+  <script src="js/pages/desafios.js"></script>
+</body>
+</html>
