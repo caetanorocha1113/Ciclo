@@ -13,8 +13,8 @@ C360.config = {
   appName: "Ciclo 360°",
 
   // ↓↓↓ Preencha com os dados do Supabase (Project Settings → API) ↓↓↓
-  supabaseUrl: "",          // ex.: "https://abcdefghijkl.supabase.co"
-  supabaseKey: "",          // chave "anon" ou "publishable" (pode ficar no site, é pública)
+  supabaseUrl: "https://jclnekjsllmkvgcwveev.supabase.co",          
+  supabaseKey: "sb_publishable_4eqE0whpjFlg_EZIYgSzcg_75Pa2m7S",          // chave "anon" ou "publishable" (pode ficar no site, é pública)
   // ↑↑↑
 
   // "auto" usa o Supabase quando os campos acima estão preenchidos; senão, o modo local.
@@ -28,5 +28,5 @@ C360.config = {
 
   // Endereço do site publicado (ex.: "https://ciclo360.netlify.app/").
   // Usado para gerar os QR codes em qrcodes.html.
-  siteUrl: ""
+  siteUrl: "https://ciclotrigonometrico.netlify.app/"
 };
