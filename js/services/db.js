@@ -77,7 +77,12 @@ C360.auth = (function () {
     /** Usado nas páginas internas: sem login, volta para a tela de entrada. */
     async requireUser() {
       const u = await this.currentUser();
-      if (!u) { location.replace("index.html"); throw new Error("Sem sessão"); }
+      if (!u) {
+        const pagina = location.pathname.split("/").pop() || "desafios.html";
+        const volta = pagina + location.search + location.hash;
+        location.replace("index.html?volta=" + encodeURIComponent(volta));
+        throw new Error("Sem sessão");
+      }
       return u;
     }
   };

@@ -24,5 +24,9 @@ C360.config = {
   apiTimeoutMs: 10000,
 
   seedDemoData: true,       // alunos de exemplo no ranking (só no modo local)
-  prototypeUrl: "prototipo/ciclo-360.html"
+  prototypeUrl: "prototipo/ciclo-360.html",
+
+  // Endereço do site publicado (ex.: "https://ciclo360.netlify.app/").
+  // Usado para gerar os QR codes em qrcodes.html.
+  siteUrl: ""
 };

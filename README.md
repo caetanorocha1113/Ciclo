@@ -14,6 +14,8 @@ index.html            entrada: login e cadastro
 desafios.html         cartas-desafio, filtros e resolução
 ranking.html          pódio, classificação, CSV (professor)
 perfil.html           nível, progresso, conquistas, histórico
+qrcodes.html          QR codes imprimíveis, um por nível (abre desafios.html?nivel=...)
+aprenda.html          explicações, figuras e vídeos por tema
 prototipo/            ciclo digital interativo
 css/  base.css        cores, tipografia, modo escuro
       components.css  botões, formulários, modal, avisos
@@ -33,6 +35,12 @@ Radi (o mascote, um ciclo com um ponteiro no lugar do braço), Sena (seno), Cosi
 apresentam as perguntas. As lições funcionam como um jogo: peças para tocar, ciclo para girar,
 reação na hora, sequência de acertos, perguntas erradas voltando no fim e resumo com confete.
 Arquivos: `js/ui/mascot.js`, `js/ui/lesson.js`, `js/ui/sfx.js` e `css/lesson.css`.
+
+## Aba Aprenda
+Seis temas (ciclo, radianos, seno e cosseno, sinais, tangente, simetrias), cada um com explicação,
+figura, vídeos do YouTube e botão para praticar o tema. Conteúdo em `js/data/learn.js`.
+Cada desafio aponta para a parte da explicação que ajuda a resolvê-lo (`C360.LEARN_LINKS`),
+e a lição abre essa explicação sem sair da pergunta.
 
 ## Regras de pontuação
 Fácil 10 · Médio 20 · Difícil 35 · Desafio 360 50 pontos.

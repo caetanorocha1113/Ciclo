@@ -5,6 +5,13 @@
   const S = C360.scoring;
   const M = C360.mascot;
 
+  /* Nível vindo do QR code (desafios.html?nivel=facil). Guardado antes do login,
+     para não se perder se a pessoa ainda precisar entrar. */
+  const qs = new URLSearchParams(location.search);
+  const limpa = v => String(v || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f\s_-]/g, "");
+  const APELIDOS = { facil: "facil", medio: "medio", dificil: "dificil", desafio360: "desafio360", "360": "desafio360", desafio: "desafio360" };
+  try { if (qs.get("nivel")) sessionStorage.setItem("c360:nivel", qs.get("nivel")); } catch (e) {}
+
   let ctx;
   try { ctx = await C360.ui.bootPage("desafios"); } catch (e) { return; }
   const { user, challenges } = ctx;
@@ -13,7 +20,10 @@
   const pmap = () => Object.fromEntries(progress.map(p => [p.challengeId, p]));
 
   const temaURL = new URLSearchParams(location.search).get("tema");
-  const filters = { diff: "todas", tema: temaURL && C360.THEMES[temaURL] ? temaURL : "todos", status: "todos" };
+  let nivelBruto = qs.get("nivel");
+  try { nivelBruto = nivelBruto || sessionStorage.getItem("c360:nivel"); sessionStorage.removeItem("c360:nivel"); } catch (e) {}
+  const nivelURL = APELIDOS[limpa(nivelBruto)] || null;
+  const filters = { diff: nivelURL && C360.DIFFICULTIES[nivelURL] ? nivelURL : "todas", tema: temaURL && C360.THEMES[temaURL] ? temaURL : "todos", status: "todos" };
 
   /* ---------- Resumo ---------- */
   function renderSummary() {
@@ -103,7 +113,8 @@
   /* ---------- Próximo desafio sugerido ---------- */
   function renderNextUp() {
     const pm = pmap();
-    const ordered = [...challenges].sort((a, b) =>
+    const pool = filters.diff === "todas" ? challenges : challenges.filter(c => c.dificuldade === filters.diff);
+    const ordered = [...pool].sort((a, b) =>
       C360.DIFFICULTIES[a.dificuldade].ordem - C360.DIFFICULTIES[b.dificuldade].ordem || (a.ordem || 0) - (b.ordem || 0));
     const started = ordered.find(c => pm[c.id] && !pm[c.id].concluido);
     const next = started || ordered.find(c => !isDone(pm, c));
@@ -267,6 +278,13 @@
   renderSummary();
   renderNextUp();
   renderCards();
+
+  /* Veio de um QR code de nível: desafios.html?nivel=medio */
+  if (filters.diff !== "todas") {
+    const st = document.getElementById("st-" + filters.diff);
+    if (st) setTimeout(() => st.scrollIntoView({ behavior: "smooth", block: "start" }), 200);
+    toast(`${C360.DIFFICULTIES[filters.diff].label}: bora girar! 🎯`, "ok");
+  }
 
   /* Abre direto um desafio: desafios.html#f03 */
   const hash = location.hash.slice(1);

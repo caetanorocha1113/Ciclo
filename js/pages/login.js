@@ -3,7 +3,12 @@
   const $ = id => document.getElementById(id);
   C360.ui.storageNote();
 
-  if (await C360.auth.currentUser()) { location.replace("desafios.html"); return; }
+  /* Volta para a página que a pessoa tentou abrir (ex.: QR code de um nível) */
+  const voltaURL = new URLSearchParams(location.search).get("volta") || "";
+  /* Aceita "desafios.html?nivel=facil" e também "desafios?nivel=facil" (Netlify tira o .html) */
+  const m = voltaURL.match(/^([a-z]+)(?:\.html)?([?#][\w=&%#.-]*)?$/i);
+  const destino = m && m[1] !== "index" ? m[1] + ".html" + (m[2] || "") : "desafios.html";
+  if (await C360.auth.currentUser()) { location.replace(destino); return; }
 
   C360.db.listTurmas().then(ts => {
     $("turmas").innerHTML = ts.map(t => `<option value="${C360.ui.esc(t)}">`).join("");
@@ -91,7 +96,7 @@
     busy(e.target, true);
     try {
       await C360.auth.login(email, senha, $("login-lembrar").checked);
-      location.href = "desafios.html";
+      location.href = destino;
     } catch (ex) {
       err.textContent = ex.message;
       radi("sad", "Ops! Confira o e-mail e a senha.");
@@ -119,7 +124,7 @@
     busy(e.target, true);
     try {
       await C360.auth.register(dados, true);
-      location.href = "desafios.html";
+      location.href = destino;
     } catch (ex) {
       busy(e.target, false);
       if (/^Conta criada/.test(ex.message)) {
